@@ -3,6 +3,7 @@ import paho.mqtt.client as mqtt
 import time
 import config
 
+
 class ID:
     """
     The ID class figures out if we already have an ID otherwise we get assigned one
@@ -17,6 +18,7 @@ class ID:
 
     def sensor(self):
         return self.id+":aa"
+
 
 class MQTT:
     """
@@ -61,6 +63,7 @@ class MQTT:
     def on_message(self, client, userdata, msg):
         print("received topic: {}".format(msg.topic))
 
+
 def eventHandler(server, topicList):
     """
     @Server is a mqtt connection
@@ -74,12 +77,14 @@ def eventHandler(server, topicList):
             server.subscribe(server.id.id+topic)
         server.start()
         time.sleep(config.interval)
-        server.send("15", ID().id +"/sensors/airhumidity")
+        server.send("15", ID().id + "/sensors/airhumidity")
         server.end()
     print("End of event loop")
 
+
 if __name__ == "__main__":
-    server = MQTT(config.server, config.port, user=config.user, password=config.passwd)
+    server = MQTT(config.server, config.port,
+                  user=config.user, password=config.passwd)
     print("Should be connected")
 
     eventHandler(server, config.subscribe)
