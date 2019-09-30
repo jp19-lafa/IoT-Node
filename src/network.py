@@ -1,4 +1,3 @@
-
 import paho.mqtt.client as mqtt
 import time
 import config
@@ -12,12 +11,14 @@ class ID:
 
     def __init__(self):
         from uuid import getnode as get_mac
+
         mac = get_mac()
-        self.id = "".join(c + ":" if i % 2 else c for i,
-                          c in enumerate(hex(mac)[2:].zfill(12)))[:-1]
+        self.id = "".join(
+            c + ":" if i % 2 else c for i, c in enumerate(hex(mac)[2:].zfill(12))
+        )[:-1]
 
     def sensor(self):
-        return self.id+":aa"
+        return self.id + ":aa"
 
 
 class MQTT:
@@ -74,7 +75,7 @@ def eventHandler(server, topicList):
     # TODO: send updated values from here
     while True:
         for topic in topicList:
-            server.subscribe(server.id.id+topic)
+            server.subscribe(server.id.id + topic)
         server.start()
         time.sleep(config.interval)
         server.send("15", ID().id + "/sensors/airhumidity")
@@ -83,8 +84,7 @@ def eventHandler(server, topicList):
 
 
 if __name__ == "__main__":
-    server = MQTT(config.server, config.port,
-                  user=config.user, password=config.passwd)
+    server = MQTT(config.server, config.port, user=config.user, password=config.passwd)
     print("Should be connected")
 
     eventHandler(server, config.subscribe)
