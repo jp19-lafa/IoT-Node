@@ -1,6 +1,7 @@
-import paho.mqtt.client as mqtt
 import time
+
 import config
+import paho.mqtt.client as mqtt
 
 
 class ID:
