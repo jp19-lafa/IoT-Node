@@ -7,3 +7,5 @@ food = 22  # pin on the rpi for the food pump
 pump = 27  # pin on the rpi for the water pump
 light = 17  # pin on the rpi for the lights
 sensorfile = "sensors.data"
+
+subscribe = ["/actuator/lightint", "/actuator/flowpump", '/actuator/foodpump']

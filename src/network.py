@@ -74,6 +74,7 @@ def eventHandler(server, topicList):
             server.subscribe(server.id.id+topic)
         server.start()
         time.sleep(config.interval)
+        server.send("15", ID().id +"/sensors/airhumidity")
         server.end()
     print("End of event loop")
 
@@ -81,6 +82,6 @@ if __name__ == "__main__":
     server = MQTT(config.server, config.port, user=config.user, password=config.passwd)
     print("Should be connected")
 
-    eventHandler(server, ["/actuator/lightint", "/actuator/flowpump", '/actuator/foodpump'])
+    eventHandler(server, config.subscribe)
 
     server.disconnect()
