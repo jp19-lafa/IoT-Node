@@ -1,6 +1,7 @@
 import time
 
 import config
+import sensordata
 import paho.mqtt.client as mqtt
 
 
@@ -79,7 +80,8 @@ def eventHandler(server, topicList):
             server.subscribe(server.id.id + topic)
         server.start()
         time.sleep(config.interval)
-        server.send("15", ID().id + "/sensors/airhumidity")
+        for data in sensordata.readAll():
+            server.send(data.payload, ID().id + data.topic)
         server.end()
     print("End of event loop")
 
