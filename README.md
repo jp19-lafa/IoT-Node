@@ -17,7 +17,7 @@
   <h3 align="center">IoT Node</h3>
 
   <p align="center">
-    Code running on a single smart farm
+    Code running on a single smart farm.
     <br />
     <a href="https://github.com/jp19-lafa/IoT-Node"><strong>Explore the docs »</strong></a>
     <br />
