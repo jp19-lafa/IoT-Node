@@ -9,3 +9,5 @@ light = 17  # pin on the rpi for the lights
 sensorfile = "sensors.data"
 
 subscribe = ["/sub/actuator/lightint", "/sub/actuator/flowpump", "/sub/actuator/foodpump"]
+
+RISKY_WATER_LEVEL = 150 # the moment the water level is to high (value between 0 and 255)
