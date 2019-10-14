@@ -1,8 +1,8 @@
 import time
 
 import config
-import sensordata
 import paho.mqtt.client as mqtt
+import sensordata
 
 
 class ID:
