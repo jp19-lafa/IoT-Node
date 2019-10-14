@@ -76,9 +76,10 @@ def eventHandler(server, topicList):
     """
     # TODO: send updated values from here
     while True:
+        server.start()
         for topic in topicList:
             server.subscribe(server.id.id + topic)
-        server.start()
+            print(server.id.id + topic)
         time.sleep(config.interval)
         for data in sensordata.readAll():
             server.send(data.payload, ID().id + data.topic)
