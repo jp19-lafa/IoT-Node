@@ -1,8 +1,8 @@
 import time
 
 import config
-import sensordata
 import paho.mqtt.client as mqtt
+import sensordata
 
 
 class ID:
@@ -15,9 +15,8 @@ class ID:
         from uuid import getnode as get_mac
 
         mac = get_mac()
-        self.id = "".join(
-            c + ":" if i % 2 else c for i, c in enumerate(hex(mac)[2:].zfill(12))
-        )[:-1]
+        self.id = "".join(c + ":" if i % 2 else c
+                          for i, c in enumerate(hex(mac)[2:].zfill(12)))[:-1]
 
     def sensor(self):
         return self.id + ":aa"
@@ -88,7 +87,10 @@ def eventHandler(server, topicList):
 
 
 if __name__ == "__main__":
-    server = MQTT(config.server, config.port, user=config.user, password=config.passwd)
+    server = MQTT(config.server,
+                  config.port,
+                  user=config.user,
+                  password=config.passwd)
     print("Should be connected")
 
     eventHandler(server, config.subscribe)
