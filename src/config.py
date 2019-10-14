@@ -2,10 +2,8 @@
 from uuid import getnode as get_mac
 
 mac = get_mac()
-mac = "".join(c + ":" if i % 2 else c for i, c in enumerate(hex(mac)[2:].zfill(12)))[
-    :-1
-]
-
+mac = "".join(c + ":" if i % 2 else c
+              for i, c in enumerate(hex(mac)[2:].zfill(12)))[:-1]
 
 server = "mira.systems"  # The server to connect to
 user = mac  # the user to connect with mqtt
@@ -17,7 +15,9 @@ pump = 27  # pin on the rpi for the water pump
 light = 17  # pin on the rpi for the lights
 sensorfile = "sensors.data"
 
-subscribe = ["/actuators/lightint", "/actuators/flowpump", "/actuators/foodpump"]
+subscribe = [
+    "/actuators/lightint", "/actuators/flowpump", "/actuators/foodpump"
+]
 
 sensors = [
     "/sensors/airtemp",
