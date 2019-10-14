@@ -88,8 +88,7 @@ def eventHandler(server, topicList):
 
 
 if __name__ == "__main__":
-    server = MQTT(config.server, config.port,
-                  user=config.user, password=config.passwd)
+    server = MQTT(config.server, config.port, user=config.user, password=config.passwd)
     print("Should be connected")
 
     eventHandler(server, config.subscribe)
