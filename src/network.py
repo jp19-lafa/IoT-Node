@@ -1,8 +1,31 @@
+
+# MIT License
+# 
+# Copyright (c) 2019 AP Hogeschool
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 import time
 
 import config
-import sensordata
 import paho.mqtt.client as mqtt
+import sensordata
 
 
 class ID:
@@ -15,9 +38,8 @@ class ID:
         from uuid import getnode as get_mac
 
         mac = get_mac()
-        self.id = "".join(
-            c + ":" if i % 2 else c for i, c in enumerate(hex(mac)[2:].zfill(12))
-        )[:-1]
+        self.id = "".join(c + ":" if i % 2 else c
+                          for i, c in enumerate(hex(mac)[2:].zfill(12)))[:-1]
 
     def sensor(self):
         return self.id + ":aa"
@@ -76,9 +98,10 @@ def eventHandler(server, topicList):
     """
     # TODO: send updated values from here
     while True:
+        server.start()
         for topic in topicList:
             server.subscribe(server.id.id + topic)
-        server.start()
+            print(server.id.id + topic)
         time.sleep(config.interval)
         for data in sensordata.readAll():
             server.send(data.payload, ID().id + data.topic)
@@ -87,7 +110,10 @@ def eventHandler(server, topicList):
 
 
 if __name__ == "__main__":
-    server = MQTT(config.server, config.port, user=config.user, password=config.passwd)
+    server = MQTT(config.server,
+                  config.port,
+                  user=config.user,
+                  password=config.passwd)
     print("Should be connected")
 
     eventHandler(server, config.subscribe)
