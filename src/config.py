@@ -27,10 +27,12 @@ from uuid import getnode as get_mac
 mac = get_mac()
 mac = "".join(c + ":" if i % 2 else c
               for i, c in enumerate(hex(mac)[2:].zfill(12)))[:-1]
+if mac[-1:] == ':':
+    mac = mac[:-1] # in case the mac address ends with :L
 
 server = "mira.systems"  # The server to connect to
 user = mac  # the user to connect with mqtt
-passwd = ""  # the password of said user
+passwd = "76989157-fe00-4d36-87f0-745f8ab73c2d"  # the password of said user
 port = 1886  # the mqtt port
 interval = 10  # how quickly to cycle through mqtt cycles
 food = 22  # pin on the rpi for the food pump
