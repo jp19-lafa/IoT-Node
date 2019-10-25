@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+# TODO: Install IoT-Node software and add a systemctl service for it
+
 # perform a system update. This should be executed first
 function update-system {
     apt update || exit 1
