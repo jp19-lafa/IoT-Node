@@ -1,4 +1,3 @@
-
 # MIT License
 #
 # Copyright (c) 2019 AP Hogeschool
@@ -27,12 +26,12 @@ import time
 import config
 import smbus
 
-os.system('modprobe w1-gpio')  # enable one wire gpio interface
-os.system('modprobe w1-therm')
+os.system("modprobe w1-gpio")  # enable one wire gpio interface
+os.system("modprobe w1-therm")
 bus = smbus.SMBus(1)  # RPI used i2C bus 1
 
 
-class Payload():
+class Payload:
     """
     Payload to send data over a mqtt connection
     """
@@ -46,9 +45,9 @@ def getOneWireSensor():
     """
     Returns the file that contains the one wire sensor data
     """
-    base_dir = '/sys/bus/w1/devices/'
-    device_folder = glob.glob(base_dir + '28*')[0]
-    return device_folder + '/w1_slave'
+    base_dir = "/sys/bus/w1/devices/"
+    device_folder = glob.glob(base_dir + "28*")[0]
+    return device_folder + "/w1_slave"
 
 
 def read_temp_raw(file):
@@ -56,7 +55,7 @@ def read_temp_raw(file):
     Read out the temperature file and return the raw lines.
     It returns a list of lines in the file (in string format utf-8)
     """
-    f = open(file, 'r')
+    f = open(file, "r")
     lines = f.readlines()
     f.close()
     return lines
@@ -80,6 +79,7 @@ def readLevel(addr):
 
 # Read section
 
+
 def readAll():
     """
     Read all sensors out. Build a MQTT payload and send it over
@@ -93,12 +93,12 @@ def readTemperature(file):
     Pass in the file containing the one wire data (ds18b20+)
     """
     lines = read_temp_raw(file)
-    while lines[0].strip()[-3:] != 'YES':
+    while lines[0].strip()[-3:] != "YES":
         time.sleep(0.2)
         lines = read_temp_raw(file)
-    equals_pos = lines[1].find('t=')
+    equals_pos = lines[1].find("t=")
     if equals_pos != -1:
-        temp_string = lines[1][equals_pos+2:]
+        temp_string = lines[1][equals_pos + 2 :]
         # convert temperature to C
         temp_c = float(temp_string) / 1000.0
         return temp_c
