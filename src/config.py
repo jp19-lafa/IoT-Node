@@ -32,7 +32,7 @@ if mac[-1:] == ':':
 
 server = "mira.systems"  # The server to connect to
 user = mac  # the user to connect with mqtt
-passwd = "76989157-fe00-4d36-87f0-745f8ab73c2d"  # the password of said user
+passwd = ""  # the password of said user
 port = 1886  # the mqtt port
 interval = 10  # how quickly to cycle through mqtt cycles
 food = 22  # pin on the rpi for the food pump
