@@ -23,9 +23,8 @@
 from uuid import getnode as get_mac
 
 mac = get_mac()
-mac = "".join(c + ":" if i % 2 else c for i, c in enumerate(hex(mac)[2:].zfill(12)))[
-    :-1
-]
+mac = "".join(c + ":" if i % 2 else c
+              for i, c in enumerate(hex(mac)[2:].zfill(12)))[:-1]
 if mac[-1:] == ":":
     mac = mac[:-1]  # in case the mac address ends with :L
 
@@ -39,7 +38,9 @@ pump = 27  # pin on the rpi for the water pump
 light = 17  # pin on the rpi for the lights
 sensorfile = "sensors.data"
 
-subscribe = ["/actuators/lightint", "/actuators/flowpump", "/actuators/foodpump"]
+subscribe = [
+    "/actuators/lightint", "/actuators/flowpump", "/actuators/foodpump"
+]
 
 sensors = [
     "/sensors/waterph",

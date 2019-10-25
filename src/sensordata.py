@@ -84,7 +84,10 @@ def readAll():
     """
     Read all sensors out. Build a MQTT payload and send it over
     """
-    return [Payload("15", "/sensors/airhumidity"), Payload("hello", "/sensors/random")]
+    return [
+        Payload("15", "/sensors/airhumidity"),
+        Payload("hello", "/sensors/random")
+    ]
 
 
 def readTemperature(file):
@@ -98,7 +101,7 @@ def readTemperature(file):
         lines = read_temp_raw(file)
     equals_pos = lines[1].find("t=")
     if equals_pos != -1:
-        temp_string = lines[1][equals_pos + 2 :]
+        temp_string = lines[1][equals_pos + 2:]
         # convert temperature to C
         temp_c = float(temp_string) / 1000.0
         return temp_c
