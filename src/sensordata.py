@@ -1,18 +1,18 @@
 
 # MIT License
-# 
+#
 # Copyright (c) 2019 AP Hogeschool
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -27,14 +27,16 @@ import time
 import config
 import smbus
 
-os.system('modprobe w1-gpio') # enable one wire gpio interface
+os.system('modprobe w1-gpio')  # enable one wire gpio interface
 os.system('modprobe w1-therm')
 bus = smbus.SMBus(1)  # RPI used i2C bus 1
+
 
 class Payload():
     """
     Payload to send data over a mqtt connection
     """
+
     def __init__(self, payload, topic):
         self.payload = payload
         self.topic = topic
@@ -48,6 +50,7 @@ def getOneWireSensor():
     device_folder = glob.glob(base_dir + '28*')[0]
     return device_folder + '/w1_slave'
 
+
 def read_temp_raw(file):
     """
     Read out the temperature file and return the raw lines.
@@ -57,6 +60,7 @@ def read_temp_raw(file):
     lines = f.readlines()
     f.close()
     return lines
+
 
 def readLevel(addr):
     """
@@ -74,7 +78,6 @@ def readLevel(addr):
     return "0"
 
 
-
 # Read section
 
 def readAll():
@@ -82,6 +85,7 @@ def readAll():
     Read all sensors out. Build a MQTT payload and send it over
     """
     return [Payload("15", "/sensors/airhumidity"), Payload("hello", "/sensors/random")]
+
 
 def readTemperature(file):
     """
@@ -98,11 +102,12 @@ def readTemperature(file):
         # convert temperature to C
         temp_c = float(temp_string) / 1000.0
         return temp_c
-    return -273.15 # absolute 0
+    return -273.15  # absolute 0
+
 
 if __name__ == "__main__":
     file = getOneWireSensor()
     while True:
         time.sleep(1)
         print(readTemperature(file))
-        print(readLevel(config.sensors[0])) # readout the first i2C sensor
+        print(readLevel(config.sensors[0]))  # readout the first i2C sensor
