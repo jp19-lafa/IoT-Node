@@ -1,14 +1,44 @@
 import logger
 import bluetooth
+import subprocess
 
-hostMACAddress = '00:1f:e1:dd:08:3d' # The MAC address of a Bluetooth adapter on the server. The server might have multiple Bluetooth adapters.
+from bluetooth.ble import DiscoveryService
+
+hostMACAddress = '' # The MAC address of a Bluetooth adapter on the server. Leave blank to use default connection
 port = 3
 backlog = 1
 size = 1024
 server = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
 
+
+def pair():
+    logger.log("Trying to pair with a device", logger.LOG_DEBUG)
+    subprocess.call("bluetoothctl --command power on")
+    subprocess.call("bluetoothctl --command scan on")
+    subprocess.call("bluetoothctl --command agent on")
+    while 1:
+        service = DiscoveryService()
+        devices = service.discover(5)
+        for address, name in devices.items():
+            logger.log("Name: {}, address: {}".format(name, address), logger.LOG_DEBUG)
+            try:
+                subprocess.check_output("bluetoothctl --command pair {}".format(address), shell=True)
+            except subprocess.CalledProcessError as e:
+                continue
+            try:
+                subprocess.check_output("bluetoothctl --command connect {}".format(address), shell=True)
+            except subprocess.CalledProcessError as e:
+                continue
+            return address
+    return ""
+
+
+
+
+
 def startup(server):
     logger.log("Starting up the bluetooth module", logger.LOG_DEBUG)
+    pair()
     server.bind((hostMACAddress, port))
     server.listen(backlog)
     return server
