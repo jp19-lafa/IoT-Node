@@ -6,7 +6,7 @@ def isConnectedTOWifi():
     return wifi.ConnectedToTheNetwork()
 
 def establishConnection():
-    logger.log("Trying to establish a wifi connection over bluetooth")
+    bluetoothManager.EstablishConnection()
 
 def start_farm():
     logger.log("Starting farm", logger.LOG_DEBUG)

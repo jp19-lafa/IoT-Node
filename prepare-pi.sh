@@ -61,6 +61,7 @@ function execute() {
   apt install -y python-smbus python3-smbus python-dev python3-dev i2c-tools || exit 1 # install smbus for i2c
   modprobe w1-gpio || exit 1
   setup-pygpiod || exit 1
+  pip install pybluez # install bluetooth support
 }
 
 # only run the commands when you are root.
