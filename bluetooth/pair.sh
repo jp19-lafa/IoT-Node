@@ -1,11 +1,13 @@
 #!/bin/bash
 
-bluetoothctl <<EOF
+bluetoothctl --agent NoInputNoOutput <<EOF
 power on
 discoverable on
 pairable on
-agent NoInputNoOutput
-default-agent
 EOF
-sleep 1
-yes yes | bluetoothctl pair
+bluetoothctl --agent NoInputNoOutput scan on &
+sleep 5
+killall bluetoothctl
+bluetoothctl --agent NoInputNoOutput pair BC:A5:8B:10:71:19 
+
+

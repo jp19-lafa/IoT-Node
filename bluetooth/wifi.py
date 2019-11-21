@@ -1,9 +1,12 @@
-import urllib
+import socket
 import config
+import logger
 
 def ConnectedToTheNetwork():
-    try:
-        urllib.urlopen(config.NETWORK_CHECK, timeout=config.NETWORK_TIMEOUT)
+     try:
+        socket.setdefaulttimeout(config.NETWORK_TIMEOUT)
+        socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((config.NETWORK_CHECK, config.NETWORK_PORT))
         return True
-    except: 
-        return False
+     except socket.error as ex:
+        logger.log("No connection is present to the internet. {}".format(ex), logger.LOG_ERROR)
+        return False # this should change once deployed
