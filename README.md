@@ -41,6 +41,7 @@
   * [Prerequisites](#prerequisites)
   * [Installation](#installation)
 * [Usage](#usage)
+  * [Bluetooth](#Bluetooth)
 * [Roadmap](#roadmap)
 * [Contributing](#contributing)
 * [License](#license)
@@ -95,6 +96,32 @@ Simply run the `network.py` file to start the connection. Make sure you build th
 ```sh
 python3 src/network.py
 ```
+
+### Bluetooth
+
+When launching `bluetooth/main.py` the server will listen for all incomming bluetooth pairing requests. When such a request comes in the server will automatically accept the request.
+After that it waits until a bluetooth connection is made. (Using RFCOMM)
+
+Here is a list of command to send to the bluetooth server to establish a network connection
+
+| Type           | Code  | Value  |
+|----------------|-------|--------|
+| Wifi standard  | TYPE: | wpa2   |
+| SSID name      | SSID: | String |
+| Password       | PWD:  | String |
+| Try to connect | TRY:  | 1      |
+
+Here is a list of exit/success codes
+
+| Code      | return type | Meaning                                             |
+|-----------|-------------|-----------------------------------------------------|
+| Error 1   | ERROR:1     | You didn't tell the server the wifi connection type |
+| Error 2   | ERROR:2     | The wifi connection type isn't recognized           |
+| Error 3   | ERROR:3     | Your network connection credentials are wrong       |
+| Success 1 | SUCCESS:1   | Sever connected to the network succesfully          |
+
+In a short example the Android application should listen for ERROR codes an display them correctly to the user.
+When a Success message has been send the bluetooth connection can be ended.
 
 _For more examples, please refer to the [Documentation](https://github.com/jp19-lafa/IoT-Node/wiki)_
 
