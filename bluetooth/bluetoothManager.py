@@ -31,10 +31,22 @@ import config
 from bluetooth.ble import DiscoveryService
 
 hostMACAddress = '' # The MAC address of a Bluetooth adapter on the server. Leave blank to use default connection
-port = 3
+port = bluetooth.PORT_ANY
 backlog = 1
 size = 1024
 server = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+
+
+class wifiConnection():
+    def __init__(self):
+        self.password = None
+        self.ssid = None
+
+    def try_connect(self):
+        """
+        Trying to connect to the network
+        """
+        logger.log("Trying to connect to the network {}".format(self.ssid))
 
 
 def pair():
@@ -70,15 +82,12 @@ def pair():
             device = i.split("")[1] # set the device address as the return statement
     return device
 
-
-
-
 def startup(server):
     """
     Initialize a bluetooth server so that we can communicate with the client phone
     """
     logger.log("Starting up the bluetooth module", logger.LOG_DEBUG)
-    logger.log("Connected to bluetooth device: {} ".format(pair()), logger.LOG_DEBUG)
+    #logger.log("Connected to bluetooth device: {} ".format(pair()), logger.LOG_DEBUG)
     if wifi.ConnectedToTheNetwork():
         return
     server.bind((hostMACAddress, port))
@@ -101,6 +110,32 @@ def idle(server):
         server.close()
     return client, clientInfo
 
+
+def extractData(command, data):
+    split = data.replace("\r\n", "").split(":")
+    if len(data) < 2:
+        logger.log("Incomming data payload is to small, {}".format(split))
+        return None
+    if not split[0] == command:
+        logger.log("Extracted data doesn't match expected type, {} but got {} instead".format(command, split[0]))
+        return None
+    logger.log("Retreived data from bluetooth socker: {}".format("".join(split[1:])), logger.LOG_DEBUG)
+    return "".join(split[1:])
+
+def extractSSID(data):
+    """
+    Retreive the network ssid from the bluetooth 
+    Command should be as followed SSID:Your_ssid
+    """
+    return extractData("SSID", data)
+
+def extractPassword(data):
+    """
+    Retreive the password from the bluetooth connection
+    Command should be as followed PWD:Your_password
+    """
+    return extractData("PWD", data)
+
 def getWifiData(client, clientInfo, server):
     """
     Comminicate with the phone over bluetooth to gather the wifi data here
@@ -108,11 +143,35 @@ def getWifiData(client, clientInfo, server):
     if wifi.ConnectedToTheNetwork():
         return
     logger.log("Receiving wifi credentials", logger.LOG_DEBUG)
-
+    connection = None
     while 1:
-        data = client.recv(size)
+        data = client.recv(size).decode("utf-8")
         if data:
-            logger.log(data)
+            if("TYPE:" in data):
+                type = extractData("TYPE", data)
+                if type == "wpa2":
+                    connection = wifiConnection()
+                else:
+                    client.send("ERROR:2 - Server doesn't recognize wifi type")
+            if("SSID:" in data):
+                if connection:
+                    connection.ssid = extractSSID(data)
+                else:
+                    client.send("ERROR:1 - No connection specified")
+            elif("PWD:" in data):
+                if connection:
+                    connection.password = extractPassword(data)
+                else:
+                    client.send("ERROR:1 - No connection specified")
+
+            elif("TRY:1" in data):
+                if connection:
+                    if (connection.try_connect()): # try to connect to the network
+                        client.send("SUCCESS:1 - connected to a network")
+                    else:
+                        client.send("ERROR:3 - Network credentials are wrong")
+                else:
+                    client.send("ERROR:1 - No connection specified")
             client.send(data) # Echo back to client
  
 
