@@ -19,15 +19,16 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import logger
-import bluetooth
 import subprocess
 import time
-import wifi
+
 import autopair as pairable
 import config
 import helper
+import logger
+import wifi
 
+import bluetooth
 from bluetooth.ble import DiscoveryService
 
 # The MAC address of a Bluetooth adapter on the server. Leave blank to use default connection

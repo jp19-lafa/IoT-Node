@@ -1,11 +1,11 @@
 # These unit tests won't cover everything since the bluetooth connections themselfs are more of an integration test than a unit test
-
-import unittest
-import helper
-import wifi
 import socket
 import subprocess
+import unittest
 from time import sleep
+
+import helper
+import wifi
 
 
 class TestHelperIDPersistance(unittest.TestCase):
