@@ -69,16 +69,14 @@ def pair():
     AutoPair.enable_pairing()
 
     # check if we paired with a new device
-    has_connected = subprocess.check_output(
-        "bluetoothctl info | head -n1", shell=True
-    ).decode("utf-8")
+    has_connected = subprocess.check_output("bluetoothctl info | head -n1",
+                                            shell=True).decode("utf-8")
     logger.log(has_connected)
     while "Missing" in has_connected:
         if wifi.ConnectedToTheNetwork():
             return
-        has_connected = subprocess.check_output(
-            "bluetoothctl info | head -n1", shell=True
-        ).decode("utf-8")
+        has_connected = subprocess.check_output("bluetoothctl info | head -n1",
+                                                shell=True).decode("utf-8")
         time.sleep(0.1)
 
     return has_connected.split(" ")[1]
@@ -90,7 +88,8 @@ def startup(server):
     @server is the bluetooth connection server
     """
     logger.log("Starting up the bluetooth module", logger.LOG_DEBUG)
-    logger.log("Connected to bluetooth device: {} ".format(pair()), logger.LOG_DEBUG)
+    logger.log("Connected to bluetooth device: {} ".format(pair()),
+               logger.LOG_DEBUG)
     if wifi.ConnectedToTheNetwork():
         return
     server.bind((hostMACAddress, port))
@@ -130,10 +129,8 @@ def extractData(command, data):
         return None
     if not split[0] == command:
         logger.log(
-            "Extracted data doesn't match expected type, {} but got {} instead".format(
-                command, split[0]
-            )
-        )
+            "Extracted data doesn't match expected type, {} but got {} instead"
+            .format(command, split[0]))
         return None
     logger.log(
         "Retreived data from bluetooth socker: {}".format("".join(split[1:])),
@@ -188,7 +185,8 @@ def getWifiData(client, clientInfo, server):
 
             elif "TRY:1" in data:
                 if connection:
-                    if connection.try_connect():  # try to connect to the network
+                    if connection.try_connect(
+                    ):  # try to connect to the network
                         client.send("SUCCESS:1 - connected to a network")
                     else:
                         client.send("ERROR:3 - Network credentials are wrong")
