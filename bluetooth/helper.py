@@ -20,3 +20,16 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+import uuid
+
+def unique_id():
+    """
+    Returns a unique id as a string
+    This id will be persistant to reboots thus always returning the same string.
+    The ID however will change for every device. (each device has another unique id)
+    """
+    mac = uuid.getnode()
+    id = uuid.uuid5(uuid.NAMESPACE_X500, str(mac))
+    return str(id).split('-')[-1]
+

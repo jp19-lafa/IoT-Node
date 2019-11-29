@@ -27,6 +27,7 @@ import time
 import wifi
 import autopair as pairable
 import config
+import helper
 
 from bluetooth.ble import DiscoveryService
 
@@ -47,6 +48,8 @@ class wifiConnection():
         Trying to connect to the network
         """
         logger.log("Trying to connect to the network {}".format(self.ssid))
+        # TODO: try to connect to the network using the given credentials
+        return False
 
 
 def pair():
@@ -55,39 +58,33 @@ def pair():
     Note that this function accepts all pair request that come in
     """
     logger.log("Trying to pair with a device", logger.LOG_DEBUG)
-    devices = subprocess.check_output("bluetoothctl paired-devices", shell=True)
+
     # only continue if there is no network
     if (wifi.ConnectedToTheNetwork()):
             return
+
     # wait unitl we pair with a devices
     AutoPair = pairable.BtAutoPair()
     AutoPair.enable_pairing()
 
     # check if we paired with a new device
-    new_devices = devices
-    while devices == new_devices:
+    has_connected = subprocess.check_output("bluetoothctl info | head -n1", shell=True).decode("utf-8")
+    logger.log(has_connected)
+    while "Missing" in has_connected:
         if (wifi.ConnectedToTheNetwork()):
             return
-        new_devices = subprocess.check_output("bluetoothctl paired-devices", shell=True)
+        has_connected = subprocess.check_output("bluetoothctl info | head -n1", shell=True).decode("utf-8")
+        time.sleep(0.1)
     
-    # find the new device
-    devices = devices.decode("utf-8").split("\n")
-    new_devices = new_devices.decode("utf-8").split("\n")
-
-    device = None # the device that is new
-    # check if a entry is nor present in the old list
-    for i in new_devices:
-        if (not i in devices):
-            logger.log("Found new device: {}".format(i))
-            device = i.split("")[1] # set the device address as the return statement
-    return device
+    return has_connected.split(" ")[1]
 
 def startup(server):
     """
     Initialize a bluetooth server so that we can communicate with the client phone
+    @server is the bluetooth connection server
     """
     logger.log("Starting up the bluetooth module", logger.LOG_DEBUG)
-    #logger.log("Connected to bluetooth device: {} ".format(pair()), logger.LOG_DEBUG)
+    logger.log("Connected to bluetooth device: {} ".format(pair()), logger.LOG_DEBUG)
     if wifi.ConnectedToTheNetwork():
         return
     server.bind((hostMACAddress, port))
@@ -97,6 +94,7 @@ def startup(server):
 def idle(server):
     """
     Wait until a bluetooth connection is made
+    @server is the bluetooth connection server
     """
     logger.log("Waiting for a bluetooth connection", logger.LOG_DEBUG)
     if wifi.ConnectedToTheNetwork():
@@ -112,6 +110,13 @@ def idle(server):
 
 
 def extractData(command, data):
+    """
+    We split the payload and extract the command and value from it.
+    If the command is equal to the expected command then we can return the value
+    Otherwise we return a nullptr
+    @command is a string containing the expected bluetooth command
+    @data is the payload send over bluetooth (also a string)
+    """
     split = data.replace("\r\n", "").split(":")
     if len(data) < 2:
         logger.log("Incomming data payload is to small, {}".format(split))
@@ -172,19 +177,23 @@ def getWifiData(client, clientInfo, server):
                         client.send("ERROR:3 - Network credentials are wrong")
                 else:
                     client.send("ERROR:1 - No connection specified")
-            client.send(data) # Echo back to client
- 
+            else:
+                client.send(data) # Echo back to client
 
-# TODO: implement this function
+
+
+
+
 def set_name(name):
     """
     We change the bluetooth pretier name here
     """
     logger.log("Changing bluetooth name to {}".format(name))
+    subprocess.call("bluetoothctl system-alias {}".format(name), shell=True)
 
 
 def EstablishConnection():
-    set_name(config.BLUETOOTH_NAME) # TODO: make a unique id as the farm name
+    set_name(config.BLUETOOTH_NAME + helper.unique_id()) # TODO: make a unique id as the farm name
     startup(server)
     client, info = idle(server)
     getWifiData(client, info, server)

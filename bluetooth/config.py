@@ -25,4 +25,5 @@ NETWORK_PORT=53 # The port to check the network connection on
 NETWORK_TIMEOUT=1
 DEBUG=True # enable debugging messages
 LOG_LEVEL=3 # if the value is 3 print WARM, DEBUG and ERROR messages, If it is 2 only print Warn and ERROR if it is any other number print only error
-BLUETOOTH_NAME="FARMLAB-"
+BLUETOOTH_NAME="FARMLAB-" # A unique id will be put behind this
+DISCOVERABLE_TIMEOUT=86400 # timeout before people no longer can connect over bluetooth
