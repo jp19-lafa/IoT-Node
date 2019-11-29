@@ -1,18 +1,18 @@
 
 # MIT License
-# 
+#
 # Copyright (c) 2019 AP Hogeschool
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -31,7 +31,8 @@ import helper
 
 from bluetooth.ble import DiscoveryService
 
-hostMACAddress = '' # The MAC address of a Bluetooth adapter on the server. Leave blank to use default connection
+# The MAC address of a Bluetooth adapter on the server. Leave blank to use default connection
+hostMACAddress = ''
 port = bluetooth.PORT_ANY
 backlog = 1
 size = 1024
@@ -61,22 +62,25 @@ def pair():
 
     # only continue if there is no network
     if (wifi.ConnectedToTheNetwork()):
-            return
+        return
 
     # wait unitl we pair with a devices
     AutoPair = pairable.BtAutoPair()
     AutoPair.enable_pairing()
 
     # check if we paired with a new device
-    has_connected = subprocess.check_output("bluetoothctl info | head -n1", shell=True).decode("utf-8")
+    has_connected = subprocess.check_output(
+        "bluetoothctl info | head -n1", shell=True).decode("utf-8")
     logger.log(has_connected)
     while "Missing" in has_connected:
         if (wifi.ConnectedToTheNetwork()):
             return
-        has_connected = subprocess.check_output("bluetoothctl info | head -n1", shell=True).decode("utf-8")
+        has_connected = subprocess.check_output(
+            "bluetoothctl info | head -n1", shell=True).decode("utf-8")
         time.sleep(0.1)
-    
+
     return has_connected.split(" ")[1]
+
 
 def startup(server):
     """
@@ -84,12 +88,14 @@ def startup(server):
     @server is the bluetooth connection server
     """
     logger.log("Starting up the bluetooth module", logger.LOG_DEBUG)
-    logger.log("Connected to bluetooth device: {} ".format(pair()), logger.LOG_DEBUG)
+    logger.log("Connected to bluetooth device: {} ".format(
+        pair()), logger.LOG_DEBUG)
     if wifi.ConnectedToTheNetwork():
         return
     server.bind((hostMACAddress, port))
     server.listen(backlog)
     return server
+
 
 def idle(server):
     """
@@ -101,8 +107,8 @@ def idle(server):
         return None, None
     try:
         client, clientInfo = server.accept()
-        
-    except:	
+
+    except:
         print("Closing socket")
         client.close()
         server.close()
@@ -122,10 +128,13 @@ def extractData(command, data):
         logger.log("Incomming data payload is to small, {}".format(split))
         return None
     if not split[0] == command:
-        logger.log("Extracted data doesn't match expected type, {} but got {} instead".format(command, split[0]))
+        logger.log("Extracted data doesn't match expected type, {} but got {} instead".format(
+            command, split[0]))
         return None
-    logger.log("Retreived data from bluetooth socker: {}".format("".join(split[1:])), logger.LOG_DEBUG)
+    logger.log("Retreived data from bluetooth socker: {}".format(
+        "".join(split[1:])), logger.LOG_DEBUG)
     return "".join(split[1:])
+
 
 def extractSSID(data):
     """
@@ -134,12 +143,14 @@ def extractSSID(data):
     """
     return extractData("SSID", data)
 
+
 def extractPassword(data):
     """
     Retreive the password from the bluetooth connection
     Command should be as followed PWD:Your_password
     """
     return extractData("PWD", data)
+
 
 def getWifiData(client, clientInfo, server):
     """
@@ -171,17 +182,14 @@ def getWifiData(client, clientInfo, server):
 
             elif("TRY:1" in data):
                 if connection:
-                    if (connection.try_connect()): # try to connect to the network
+                    if (connection.try_connect()):  # try to connect to the network
                         client.send("SUCCESS:1 - connected to a network")
                     else:
                         client.send("ERROR:3 - Network credentials are wrong")
                 else:
                     client.send("ERROR:1 - No connection specified")
             else:
-                client.send(data) # Echo back to client
-
-
-
+                client.send(data)  # Echo back to client
 
 
 def set_name(name):
@@ -193,7 +201,8 @@ def set_name(name):
 
 
 def EstablishConnection():
-    set_name(config.BLUETOOTH_NAME + helper.unique_id()) # TODO: make a unique id as the farm name
+    # TODO: make a unique id as the farm name
+    set_name(config.BLUETOOTH_NAME + helper.unique_id())
     startup(server)
     client, info = idle(server)
     getWifiData(client, info, server)
