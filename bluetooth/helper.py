@@ -1,4 +1,3 @@
-
 # MIT License
 #
 # Copyright (c) 2019 AP Hogeschool
@@ -32,4 +31,4 @@ def unique_id():
     """
     mac = uuid.getnode()
     id = uuid.uuid5(uuid.NAMESPACE_X500, str(mac))
-    return str(id).split('-')[-1]
+    return str(id).split("-")[-1]

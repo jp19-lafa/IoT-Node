@@ -25,8 +25,7 @@ class TestNetworkCheck(unittest.TestCase):
         # check that the network does in fact exists
         try:
             socket.setdefaulttimeout(1)
-            socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect(
-                ("1.1.1.1", 53))
+            socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect(("1.1.1.1", 53))
             self.assertTrue(True)
         except socket.error as ex:
             self.assertTrue(False)
@@ -40,8 +39,7 @@ class TestNetworkCheck(unittest.TestCase):
         connected = True
         try:
             socket.setdefaulttimeout(1)
-            socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect(
-                ("1.1.1.1", 53))
+            socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect(("1.1.1.1", 53))
         except socket.error as ex:
             connected = False
         self.assertTrue(wifi.ConnectedToTheNetwork())
@@ -51,15 +49,12 @@ class TestNetworkCheck(unittest.TestCase):
 class TestCommandsExists(unittest.TestCase):
     def test_bluetoothctl_exists(self):
         # check that the bluetoothclt exists
-        self.assertTrue(subprocess.call(
-            "command -v bluetoothctl", shell=True) == 0)
+        self.assertTrue(subprocess.call("command -v bluetoothctl", shell=True) == 0)
 
     def test_wpa_supplicant_exists(self):
         # check that wpa_supplicant exists
-        self.assertTrue(subprocess.call(
-            "command -v wpa_supplicant", shell=True) == 0)
+        self.assertTrue(subprocess.call("command -v wpa_supplicant", shell=True) == 0)
 
     def test_wpa_supplicant_exists(self):
         # check if the init daemon is systemctl
-        self.assertTrue(subprocess.call(
-            "command -v systemctl", shell=True) == 0)
+        self.assertTrue(subprocess.call("command -v systemctl", shell=True) == 0)
