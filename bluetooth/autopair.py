@@ -52,6 +52,7 @@ class BtAutoPair:
 		print("pairing enabled")
 		try:
 			out = self.get_output("power on")
+			#out = self.get_output("discoverable-timeout 86400")
 			out = self.get_output("discoverable on")
 			out = self.get_output("pairable on")
 			out = self.get_output("agent off")
