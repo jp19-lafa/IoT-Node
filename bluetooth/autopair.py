@@ -34,8 +34,7 @@ class BtAutoPair:
 
     def __init__(self):
         p = subprocess.Popen("./agent.py", shell=False)
-        out = subprocess.check_output(
-            "/usr/sbin/rfkill unblock bluetooth", shell=True)
+        out = subprocess.check_output("/usr/sbin/rfkill unblock bluetooth", shell=True)
         self.child = pexpect.spawn("bluetoothctl", echo=False)
 
     def get_output(self, command, pause=0):
@@ -45,8 +44,7 @@ class BtAutoPair:
         start_failed = self.child.expect(["bluetooth", pexpect.EOF])
 
         if start_failed:
-            raise BluetoothctlError(
-                "Bluetoothctl failed after running " + command)
+            raise BluetoothctlError("Bluetoothctl failed after running " + command)
 
         return self.child.before.split("\r\n")
 
@@ -55,7 +53,7 @@ class BtAutoPair:
         print("pairing enabled")
         try:
             out = self.get_output("power on")
-            #out = self.get_output("discoverable-timeout 86400")
+            # out = self.get_output("discoverable-timeout 86400")
             out = self.get_output("discoverable on")
             out = self.get_output("pairable on")
             out = self.get_output("agent off")
