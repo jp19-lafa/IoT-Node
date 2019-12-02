@@ -1,5 +1,4 @@
 #!/usr/bin/python
-
 # MIT License
 #
 # Copyright (c) 2019 AP Hogeschool
@@ -22,11 +21,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 # encoding=utf8
-
+import subprocess
 import sys
 import time
+
 import pexpect
-import subprocess
 
 
 class BtAutoPair:
