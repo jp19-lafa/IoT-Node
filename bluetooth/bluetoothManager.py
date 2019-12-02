@@ -73,10 +73,10 @@ def pair():
                                             shell=True).decode("utf-8")
     logger.log(has_connected)
     while "Missing" in has_connected:
-        has_connected = subprocess.check_output("bluetoothctl info | head -n1", shell=True).decode("utf-8")
+        has_connected = subprocess.check_output("bluetoothctl info | head -n1",
+                                                shell=True).decode("utf-8")
         time.sleep(0.1)
     logger.log("Connected with device: " + has_connected)
-    
 
     return has_connected.split(" ")[1]
 
@@ -94,7 +94,13 @@ def startup(server):
     server.bind((hostMACAddress, port))
     server.listen(backlog)
     uuid = "94f39d29-7d6d-437d-973b-fba39e49d4ee"
-    bluetooth.advertise_service(sock=server, name="Bluetooth Speaker", service_id=uuid, service_classes=[bluetooth.SERIAL_PORT_CLASS], profiles=[bluetooth.SERIAL_PORT_PROFILE])
+    bluetooth.advertise_service(
+        sock=server,
+        name="Bluetooth Speaker",
+        service_id=uuid,
+        service_classes=[bluetooth.SERIAL_PORT_CLASS],
+        profiles=[bluetooth.SERIAL_PORT_PROFILE],
+    )
 
     return server
 
@@ -206,7 +212,6 @@ def set_name(name):
     subprocess.call("bluetoothctl system-alias {}".format(name), shell=True)
     subprocess.call("bluetoothctl discoverable-timeout 86400", shell=True)
     subprocess.call("bluetoothctl discoverable on", shell=True)
-
 
 
 def EstablishConnection():
