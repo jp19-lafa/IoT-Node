@@ -27,3 +27,6 @@ LOG_LEVEL = 3 # if the value is 3 print WARM, DEBUG and ERROR messages, If it is
 BLUETOOTH_NAME = "FARMLAB-"  # A unique id will be put behind this
 # timeout before people no longer can connect over bluetooth
 DISCOVERABLE_TIMEOUT = 86400
+
+# timeout until we return that the network connection failed
+WIFI_WAIT_UNTIL_CONNECTION = 5

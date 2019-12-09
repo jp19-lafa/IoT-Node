@@ -22,11 +22,12 @@
 import subprocess
 import time
 
-import autopair as pairable
-import config
-import helper
-import logger
-import wifi
+import bluetooth.autopair as pairable
+import bluetooth.config as config
+import bluetooth.helper as helper
+import bluetooth.logger as logger
+import bluetooth.wifi as wifi
+import bluetooth.wpa as wpa
 
 import bluetooth
 from bluetooth.ble import DiscoveryService
@@ -50,7 +51,30 @@ class wifiConnection:
         """
         logger.log("Trying to connect to the network {}".format(self.ssid))
         # TODO: try to connect to the network using the given credentials
-        return False
+        cli = wpa.wpa(["ssid {}".format(self.ssid), "psk {}".format(self.password)])
+        cli.execute()
+        # give time to connect
+        time.sleep(config.WIFI_WAIT_UNTIL_CONNECTION)
+        return wifi.ConnectedToTheNetwork()
+
+class wifiMCHAPConnection:
+    def __init__(self):
+        self.password = None
+        self.username = None
+        self.ssid = None
+
+    def try_connect(self):
+        """
+        Trying to connect to the network
+        """
+        logger.log("Trying to connect to the network {}".format(self.ssid))
+        # TODO: try to connect to the network using the given credentials
+        cli = wpa.wpa(["ssid {}".format(self.ssid), "password {}".format(self.password),
+        "key_mgmt WPA_EAP", "eap PEAP", "identity {}".format(self.username)])
+        cli.execute()
+        # give time to connect
+        time.sleep(config.WIFI_WAIT_UNTIL_CONNECTION)
+        return wifi.ConnectedToTheNetwork()
 
 
 def pair():
@@ -156,6 +180,13 @@ def extractPassword(data):
     """
     return extractData("PWD", data)
 
+def extractUsername(data):
+    """
+    Retreive the password from the bluetooth connection
+    Command should be as followed PWD:Your_password
+    """
+    return extractData("USER", data)
+
 
 def getWifiData(client, clientInfo, server):
     """
@@ -172,6 +203,8 @@ def getWifiData(client, clientInfo, server):
                 type = extractData("TYPE", data)
                 if type == "wpa2":
                     connection = wifiConnection()
+                elif type == "mchap":
+                    connection = wifiMCHAPConnection()
                 else:
                     client.send("ERROR:2 - Server doesn't recognize wifi type")
             if "SSID:" in data:
@@ -184,7 +217,14 @@ def getWifiData(client, clientInfo, server):
                     connection.password = extractPassword(data)
                 else:
                     client.send("ERROR:1 - No connection specified")
-
+            elif "USER:" in data:
+                if connection:
+                    if connection is wifiMCHAPConnection:
+                        connection.username = extractUsername(data)
+                    else:
+                        client.send("ERROR:4 cannot set property that is not part of the connection type")
+                else:
+                    client.send("ERROR:1 - No connection specified")
             elif "TRY:1" in data:
                 if connection:
                     if connection.try_connect(
