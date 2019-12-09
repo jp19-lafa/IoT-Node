@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import pigpio
-
+from time import sleep
 pi = pigpio.pi()
 
 
@@ -32,3 +32,35 @@ def receive(self, payload, pin):
     val = int(float("".join(payload)))
     print("Value in percent {}".format(val))
     pi.set_PWM_dutycycle(pin, val)
+
+class stepper:
+    def __init__(self, dirPin, stepPin, sleepPin, Resolution=1):
+        """
+        @Dirpin is the pin to change the direction of the motor
+        @Steppin is the pin to toggle in order for the stepper motor to rotate once
+        @SleepPin is the pin to turn of the motor driver
+        @Resolution is the precision of the driver (microstepping)
+        """
+        self.dirPin = dirPin
+        self.stepPin = stepPin
+        self.sleepPin = sleepPin
+        self.Resolution = Resolution
+        self.SPR = (360/1.8) * Resolution
+
+    def turn_degrees(self, degrees, dir, delay=1):
+        """
+        Rotate to motor at a given speed
+        @degrees is the amount of degrees to rotate the motor shaft
+        @dir is in which direction to turn (0 or 1)
+        @delay is the speed of rotation for a full turn
+        """
+        pi.write(self.dirPin, dir)
+        pi.write(self.sleepPin, 1)
+        sleep(0.5)
+        delay = delay / self.SPR # time to take per step
+        for x in range(int((degrees/360) * SPR)):
+            pi.write(self.stepPin, 1)
+            sleep(delay)
+            pi.write(self.stepPin, 0)
+            sleep(delay)
+        pi.write(self.sleepPin,0)
