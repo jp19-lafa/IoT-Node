@@ -23,7 +23,7 @@ import glob
 import os
 import time
 
-import config
+import src.config as config
 import smbus
 
 os.system("modprobe w1-gpio")  # enable one wire gpio interface

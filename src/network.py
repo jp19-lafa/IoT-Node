@@ -23,9 +23,9 @@
 
 import time
 
-import config
+import src.config as config
 import paho.mqtt.client as mqtt
-import sensordata
+import src.sensordata as sensordata
 
 
 class ID:
@@ -85,6 +85,7 @@ class MQTT:
     # The callback for when a PUBLISH message is received from the server.
     # this should parse the information and propagate it
     # TODO: Handle received values here
+    # TODO: call the correct middelware based on the motor
     def on_message(self, client, userdata, msg):
         print("received topic: {}".format(msg.topic))
 

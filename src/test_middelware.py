@@ -22,8 +22,8 @@
 # SOFTWARE.
 
 import unittest
-import middelware
-import config
+import src.middelware as middelware
+import src.config as config
 
 class TestMiddelWareMethods(unittest.TestCase):
     def test_sensorHandlerWaterLevelHigh(self):
