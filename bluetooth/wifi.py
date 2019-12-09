@@ -21,8 +21,8 @@
 # SOFTWARE.
 import socket
 
-import config
-import logger
+import bluetooth.config as config
+import bluetooth.logger as logger
 
 
 def ConnectedToTheNetwork():
@@ -30,7 +30,7 @@ def ConnectedToTheNetwork():
         socket.setdefaulttimeout(config.NETWORK_TIMEOUT)
         socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect(
             (config.NETWORK_CHECK, config.NETWORK_PORT))
-        return False  # TODO: this should change once deployed
+        return True  # TODO: this should change once deployed
     except socket.error as ex:
         logger.log("No connection is present to the internet. {}".format(ex),
                    logger.LOG_ERROR)

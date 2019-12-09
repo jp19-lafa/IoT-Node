@@ -20,9 +20,32 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import pigpio
+import src.config as config
 from time import sleep
 pi = pigpio.pi()
 
+
+
+def controlWaterPump(speed):
+    """
+    @speed is the speed of the water pump in percentage between 0 and 100
+    """
+    # TODO retreive the height of the water and toggle the motor based on the middleware value
+    receive(speed, config.pump)
+
+def controlFood(speed):
+    """
+    @speed is the speed of the food pump in percentage between 0 and 100
+    """
+    # TODO: add middelware to protect from over saturation of food in water
+    receive(speed, config.food)
+
+def controlLight(brightness):
+    """
+    @brightness is the brightness of the light in percentage between 0 and 100
+    """
+    # TODO: add light middelware check
+    receive(brightness, config.light)
 
 # Convert received value to a dutycyle on the received pin
 def receive(self, payload, pin):
