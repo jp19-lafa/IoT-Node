@@ -25,7 +25,7 @@ import time
 
 import src.config as config
 import paho.mqtt.client as mqtt
-import src.sensordata as sensordata
+#import src.sensordata as sensordata
 
 
 class ID:
@@ -57,11 +57,11 @@ class MQTT:
     """
 
     def __init__(self, host, port, password="", user="", useID=True):
-        self.id = ID()
+        self.id = config.mac
         if useID:
-            self.client = mqtt.Client(client_id=self.id.id)
+            self.client = mqtt.Client(client_id=self.id)
         else:
-            self.client = mqtt.Client(client_id=self.id.sensor())
+            self.client = mqtt.Client(client_id=self.id)
         self.client.username_pw_set(user, password)
         self.client.connect(host, port, 10)
         self.client.on_message = self.on_message
@@ -101,11 +101,13 @@ def eventHandler(server, topicList):
     while True:
         server.start()
         for topic in topicList:
-            server.subscribe(server.id.id + topic)
-            print(server.id.id + topic)
+            server.subscribe(server.id + topic)
+            print(server.id + topic)
         time.sleep(config.interval)
-        for data in sensordata.readAll():
-            server.send(data.payload, ID().id + data.topic)
+        #for data in sensordata.readAll():
+        #    server.send(data.payload, ID().id + data.topic)
+        server.send(255, server.id + config.sensors[0])
+        print("send sensor data")
         server.end()
     print("End of event loop")
 
