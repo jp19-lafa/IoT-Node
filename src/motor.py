@@ -29,7 +29,9 @@ def receive(self, payload, pin):
     """
     Convert the received data to a pwm signal on the pin
     """
-    val = int(float("".join(payload)))
+    val = payload
+    if type(payload) is str:
+        val = int(float("".join(payload)))
     print("Value in percent {}".format(val))
     pi.set_PWM_dutycycle(pin, val)
 
