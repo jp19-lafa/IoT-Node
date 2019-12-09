@@ -24,4 +24,4 @@
 
 IP="192.168.3.3"
 
-rsync -rl src pi@"$IP":/home/pi/jp19-lafa
+rsync -rl . pi@"$IP":/home/pi/jp19-lafa

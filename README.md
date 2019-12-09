@@ -106,9 +106,10 @@ Here is a list of command to send to the bluetooth server to establish a network
 
 | Type           | Code  | Value  |
 |----------------|-------|--------|
-| Wifi standard  | TYPE: | wpa2   |
+| Wifi standard  | TYPE: | wpa2,mchap   |
 | SSID name      | SSID: | String |
 | Password       | PWD:  | String |
+| Username       | USER:  | String (mchap only) |
 | Try to connect | TRY:  | 1      |
 
 Here is a list of exit/success codes
@@ -118,6 +119,7 @@ Here is a list of exit/success codes
 | Error 1   | ERROR:1     | You didn't tell the server the wifi connection type |
 | Error 2   | ERROR:2     | The wifi connection type isn't recognized           |
 | Error 3   | ERROR:3     | Your network connection credentials are wrong       |
+| Error 4   | ERROR:4     | Property is not part of the connection type       |
 | Success 1 | SUCCESS:1   | Sever connected to the network succesfully          |
 
 In a short example the Android application should listen for ERROR codes an display them correctly to the user.
