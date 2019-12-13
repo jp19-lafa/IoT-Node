@@ -22,13 +22,16 @@
 import glob
 import os
 import time
+import random
 
 import src.config as config
-import smbus
 
-os.system("modprobe w1-gpio")  # enable one wire gpio interface
-os.system("modprobe w1-therm")
-bus = smbus.SMBus(1)  # RPI used i2C bus 1
+# TODO: uncomment when using rpi
+#import smbus
+
+#os.system("modprobe w1-gpio")  # enable one wire gpio interface
+#os.system("modprobe w1-therm")
+#bus = smbus.SMBus(1)  # RPI used i2C bus 1
 
 
 class Payload:
@@ -85,8 +88,11 @@ def readAll():
     Read all sensors out. Build a MQTT payload and send it over
     """
     return [
-        Payload("15", "/sensors/airhumidity"),
-        Payload("hello", "/sensors/random")
+        Payload(str((random.random()*4) + 5), "/sensor/waterph"),
+        Payload(str((random.random()*10) + 14), "/sensor/watertemp"),
+        Payload(str((random.random()*600) + 100), "/sensor/lightstr"),
+        Payload(str((random.random()*20) + 40), "/sensor/airhumidity"),
+        Payload(str((random.random()*10) + 14), "/sensor/airtemp")
     ]
 
 

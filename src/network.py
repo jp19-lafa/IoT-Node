@@ -57,11 +57,11 @@ class MQTT:
     """
 
     def __init__(self, host, port, password="", user="", useID=True):
-        self.id = ID()
+        self.id = config.mac
         if useID:
-            self.client = mqtt.Client(client_id=self.id.id)
+            self.client = mqtt.Client(client_id=self.id)
         else:
-            self.client = mqtt.Client(client_id=self.id.sensor())
+            self.client = mqtt.Client(client_id=self.id)
         self.client.username_pw_set(user, password)
         self.client.connect(host, port, 10)
         self.client.on_message = self.on_message
@@ -84,10 +84,22 @@ class MQTT:
 
     # The callback for when a PUBLISH message is received from the server.
     # this should parse the information and propagate it
-    # TODO: Handle received values here
-    # TODO: call the correct middelware based on the motor
     def on_message(self, client, userdata, msg):
-        print("received topic: {}".format(msg.topic))
+        topic = msg.topic
+        payload = float(msg.payload.decode("utf-8")) 
+        print("Payload in percent {}".format(payload))
+        if topic == self.id + config.subscribe[0]:
+            # TODO: call motor values
+            print("send to light") 
+        elif topic == self.id + config.subscribe[1]:
+            # TODO: call motor values
+            print("send to flowpump") 
+        elif topic == self.id + config.subscribe[2]:
+            # TODO: call motor values
+            print("sending to foodpump")
+
+        else:
+            print("Unknown topic")
 
 
 def eventHandler(server, topicList):
@@ -100,12 +112,15 @@ def eventHandler(server, topicList):
     # TODO: send updated values from here
     while True:
         server.start()
+        # receive actuator data
         for topic in topicList:
-            server.subscribe(server.id.id + topic)
-            print(server.id.id + topic)
-        time.sleep(config.interval)
+            server.subscribe(server.id + topic)
+            print(server.id + topic)
+        # send sensor data
         for data in sensordata.readAll():
-            server.send(data.payload, ID().id + data.topic)
+            server.send(data.payload, server.id + data.topic)
+        time.sleep(config.interval)
+        print("send sensor data")
         server.end()
     print("End of event loop")
 
