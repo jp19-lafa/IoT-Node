@@ -27,11 +27,11 @@ mac = "".join(c + ":" if i % 2 else c
               for i, c in enumerate(hex(mac)[2:].zfill(12)))[:-1]
 if mac[-1:] == ":":
     mac = mac[:-1]  # in case the mac address ends with :L
-
-server = "mira.systems"  # The server to connect to
+mac = mac.upper()
+server = "mqtt.farmlab.team"  # The server to connect to
 user = mac  # the user to connect with mqtt
 passwd = ""  # the password of said user
-port = 1886  # the mqtt port
+port = 1883  # the mqtt port
 interval = 10  # how quickly to cycle through mqtt cycles
 food = 22  # pin on the rpi for the food pump
 pump = 27  # pin on the rpi for the water pump
@@ -39,15 +39,15 @@ light = 17  # pin on the rpi for the lights
 sensorfile = "sensors.data"
 
 subscribe = [
-    "/actuators/lightint", "/actuators/flowpump", "/actuators/foodpump"
+    "/actuator/lightint", "/actuator/flowpump", "/actuator/foodpump"
 ]
 
 sensors = [
-    "/sensors/waterph",
-    "/sensors/watertemp",
-    "/sensors/lightstr",
-    "/sensors/airhumidity",
-    "/sensors/airtemp",
+    "/sensor/waterph",
+    "/sensor/watertemp",
+    "/sensor/lightstr",
+    "/sensor/airhumidity",
+    "/sensor/airtemp",
 ]
 
 # list of all sensors

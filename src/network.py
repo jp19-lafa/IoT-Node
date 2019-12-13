@@ -25,7 +25,7 @@ import time
 
 import src.config as config
 import paho.mqtt.client as mqtt
-#import src.sensordata as sensordata
+import src.sensordata as sensordata
 
 
 class ID:
@@ -84,10 +84,22 @@ class MQTT:
 
     # The callback for when a PUBLISH message is received from the server.
     # this should parse the information and propagate it
-    # TODO: Handle received values here
-    # TODO: call the correct middelware based on the motor
     def on_message(self, client, userdata, msg):
-        print("received topic: {}".format(msg.topic))
+        topic = msg.topic
+        payload = float(msg.payload.decode("utf-8")) 
+        print("Payload in percent {}".format(payload))
+        if topic == self.id + config.subscribe[0]:
+            # TODO: call motor values
+            print("send to light") 
+        elif topic == self.id + config.subscribe[1]:
+            # TODO: call motor values
+            print("send to flowpump") 
+        elif topic == self.id + config.subscribe[2]:
+            # TODO: call motor values
+            print("sending to foodpump")
+
+        else:
+            print("Unknown topic")
 
 
 def eventHandler(server, topicList):
@@ -100,13 +112,14 @@ def eventHandler(server, topicList):
     # TODO: send updated values from here
     while True:
         server.start()
+        # receive actuator data
         for topic in topicList:
             server.subscribe(server.id + topic)
             print(server.id + topic)
+        # send sensor data
+        for data in sensordata.readAll():
+            server.send(data.payload, server.id + data.topic)
         time.sleep(config.interval)
-        #for data in sensordata.readAll():
-        #    server.send(data.payload, ID().id + data.topic)
-        server.send(255, server.id + config.sensors[0])
         print("send sensor data")
         server.end()
     print("End of event loop")
