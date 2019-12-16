@@ -44,6 +44,8 @@ class wifiConnection:
     def __init__(self):
         self.password = None
         self.ssid = None
+        logger.log("WPA2 connection created")
+
 
     def try_connect(self):
         """
@@ -62,6 +64,7 @@ class wifiMCHAPConnection:
         self.password = None
         self.username = None
         self.ssid = None
+        logger.log("MCHAP connection created")
 
     def try_connect(self):
         """
@@ -69,8 +72,8 @@ class wifiMCHAPConnection:
         """
         logger.log("Trying to connect to the network {}".format(self.ssid))
         # TODO: try to connect to the network using the given credentials
-        cli = wpa.wpa(["ssid {}".format(self.ssid), "password {}".format(self.password),
-        "key_mgmt WPA_EAP", "eap PEAP", "identity {}".format(self.username)])
+        cli = wpa.wpa(["ssid {}".format(self.ssid),
+        "key_mgmt WPA_EAP", "eap PEAP", "identity {}".format(self.username), "password {}".format(self.password)])
         cli.execute()
         # give time to connect
         time.sleep(config.WIFI_WAIT_UNTIL_CONNECTION)
@@ -227,7 +230,7 @@ def getWifiData(client, clientInfo, server):
                     client.send("ERROR:1 - No connection specified")
             elif "USER:" in data:
                 if connection:
-                    if connection is wifiMCHAPConnection:
+                    if isinstance(connection, wifiMCHAPConnection):
                         connection.username = extractUsername(data)
                     else:
                         client.send("ERROR:4 cannot set property that is not part of the connection type")

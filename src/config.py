@@ -28,6 +28,9 @@ mac = "".join(c + ":" if i % 2 else c
 if mac[-1:] == ":":
     mac = mac[:-1]  # in case the mac address ends with :L
 mac = mac.upper()
+mac = "B4:D5:BD:9B:5B:4F"
+
+
 server = "mqtt.farmlab.team"  # The server to connect to
 user = mac  # the user to connect with mqtt
 passwd = "a2cab33e-a115-41db-ae41-da7383303c1d"  # the password of said user

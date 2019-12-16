@@ -26,7 +26,7 @@ import time
 import src.config as config
 import paho.mqtt.client as mqtt
 import src.sensordata as sensordata
-
+import src.motor as motor
 
 class ID:
     """
@@ -91,13 +91,15 @@ class MQTT:
         if topic == self.id + config.subscribe[0]:
             # TODO: call motor values
             print("send to light") 
+            motor.controlLight(payload)
         elif topic == self.id + config.subscribe[1]:
             # TODO: call motor values
             print("send to flowpump") 
+            motor.controlWaterPump(payload)
         elif topic == self.id + config.subscribe[2]:
             # TODO: call motor values
             print("sending to foodpump")
-
+            motor.controlFood(payload)
         else:
             print("Unknown topic")
 
