@@ -4,8 +4,8 @@ import subprocess
 import unittest
 from time import sleep
 
-import bluetooth.helper as helper
-import bluetooth.wifi as wifi
+import pair.helper as helper
+import pair.wifi as wifi
 
 
 class TestHelperIDPersistance(unittest.TestCase):

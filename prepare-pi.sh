@@ -53,15 +53,30 @@ function enable-w1() {
   printf "dtoverlay=w1-gpio\n" >>/boot/config.txt || exit 1
 }
 
+function install-gattlib {
+  pip3 download gattlib
+  tar xvzf ./gattlib-0.20150805.tar.gz
+  cd gattlib-0.20150805/
+  sed -ie 's/boost_python-py34/boost_python-py35/' setup.py
+  pip3 install .
+}
+
+function prepare-bluetooth {
+  sed -i 's:ExecStart=/usr/lib/bluetooth/bluetoothd:ExecStart=/usr/lib/bluetooth/bluetoothd -C:' /etc/systemd/system/dbus-org.bluez.service
+  sdptool add SP
+}
+
 # install all software needed to run the IoT Node
 function execute() {
   update-system
   enable-i2c
   enable-w1
-  apt install -y python-smbus python3-smbus python-dev python3-dev i2c-tools || exit 1 # install smbus for i2c
+  prepare-bluetooth
+  apt install -y python-smbus python3-smbus python-dev python3-dev i2c-tools libbluetooth-dev python-dev mercurial libglib2.0-dev libboost-python-dev libboost-all-dev libboost-thread-dev || exit 1 # install smbus for i2c
   modprobe w1-gpio || exit 1
   setup-pygpiod || exit 1
-  pip install pybluez gattlib # install bluetooth support
+  install-gattlib
+  pip3 install PyBluez  pexpect # install bluetooth support
 }
 
 # only run the commands when you are root.
