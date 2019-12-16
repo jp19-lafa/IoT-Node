@@ -22,12 +22,12 @@
 import subprocess
 import time
 
-import bluetooth.autopair as pairable
-import bluetooth.config as config
-import bluetooth.helper as helper
-import bluetooth.logger as logger
-import bluetooth.wifi as wifi
-import bluetooth.wpa as wpa
+import pair.autopair as pairable
+import pair.config as config
+import pair.helper as helper
+import pair.logger as logger
+import pair.wifi as wifi
+import pair.wpa as wpa
 
 import bluetooth
 from bluetooth.ble import DiscoveryService
@@ -90,7 +90,9 @@ def pair():
 
     # wait unitl we pair with a devices
     AutoPair = pairable.BtAutoPair()
+    logger.log("Configuring discoverability settings")
     AutoPair.enable_pairing()
+    logger.log("Done configuring bluetooth settings")
 
     # check if we paired with a new device
     has_connected = subprocess.check_output("bluetoothctl info | head -n1",
@@ -249,9 +251,11 @@ def set_name(name):
     We change the bluetooth pretier name here
     """
     logger.log("Changing bluetooth name to {}".format(name))
-    subprocess.call("bluetoothctl system-alias {}".format(name), shell=True)
-    subprocess.call("bluetoothctl discoverable-timeout 86400", shell=True)
-    subprocess.call("bluetoothctl discoverable on", shell=True)
+    subprocess.call("bluetoothctl <<EOF\nsystem-alias {}\nEOF".format(name), shell=True)
+    subprocess.call("bluetoothctl <<EOF\ndiscoverable-timeout 86400\nEOF", shell=True)
+    subprocess.call("bluetoothctl <<EOF\ndiscoverable on\nEOF", shell=True)
+    logger.log("Done setting bluetooth settings {}".format(name))
+
 
 
 def EstablishConnection():

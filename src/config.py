@@ -30,7 +30,7 @@ if mac[-1:] == ":":
 mac = mac.upper()
 server = "mqtt.farmlab.team"  # The server to connect to
 user = mac  # the user to connect with mqtt
-passwd = ""  # the password of said user
+passwd = "a2cab33e-a115-41db-ae41-da7383303c1d"  # the password of said user
 port = 1883  # the mqtt port
 interval = 10  # how quickly to cycle through mqtt cycles
 food = 22  # pin on the rpi for the food pump

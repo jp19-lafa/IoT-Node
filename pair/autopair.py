@@ -32,7 +32,7 @@ class BtAutoPair:
     """Class to auto pair and trust with bluetooth."""
 
     def __init__(self):
-        p = subprocess.Popen("./agent.py", shell=False)
+        p = subprocess.Popen("./pair/agent.py", shell=False)
         out = subprocess.check_output("/usr/sbin/rfkill unblock bluetooth",
                                       shell=True)
         self.child = pexpect.spawn("bluetoothctl", echo=False)
