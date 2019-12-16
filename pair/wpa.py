@@ -12,3 +12,4 @@ class wpa:
             str += "set_network 0 {}\n".format(command)
         str += "EOF"
         print(str)
+        # TODO run in a subshell

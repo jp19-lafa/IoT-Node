@@ -48,7 +48,7 @@ def controlLight(brightness):
     receive(brightness, config.light)
 
 # Convert received value to a dutycyle on the received pin
-def receive(self, payload, pin):
+def receive(payload, pin):
     """
     Convert the received data to a pwm signal on the pin
     """
@@ -56,6 +56,10 @@ def receive(self, payload, pin):
     if type(payload) is str:
         val = int(float("".join(payload)))
     print("Value in percent {}".format(val))
+    val = int(val*2.55)
+    print("Calculated value {}".format(val))
+    val = val if val < 255 else 255
+    val = val if val > 0 else 0
     pi.set_PWM_dutycycle(pin, val)
 
 class stepper:
