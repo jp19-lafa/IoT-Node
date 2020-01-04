@@ -21,6 +21,7 @@
 # SOFTWARE.
 import pigpio
 import src.config as config
+import src.logger as logger
 from time import sleep
 pi = pigpio.pi()
 
@@ -55,11 +56,12 @@ def receive(payload, pin):
     val = payload
     if type(payload) is str:
         val = int(float("".join(payload)))
-    print("Value in percent {}".format(val))
+    logger.log("Value in percent {}".format(val), logger.LOG_DEBUG)
     val = int(val*2.55)
-    print("Calculated value {}".format(val))
     val = val if val < 255 else 255
     val = val if val > 0 else 0
+    logger.log("Value as a byte {}".format(val), logger.LOG_DEBUG)
+
     pi.set_PWM_dutycycle(pin, val)
 
 class stepper:

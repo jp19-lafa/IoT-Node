@@ -27,6 +27,7 @@ import src.config as config
 import paho.mqtt.client as mqtt
 import src.sensordata as sensordata
 import src.motor as motor
+import src.logger as logger
 
 class ID:
     """
@@ -73,7 +74,7 @@ class MQTT:
         self.client.subscribe(topic)
 
     def disconnect(self):
-        print("Disconnected")
+        logger.log("MQTT server disconnected", logger.LOG_ERROR)
         self.client.disconnect()
 
     def start(self):
@@ -87,21 +88,23 @@ class MQTT:
     def on_message(self, client, userdata, msg):
         topic = msg.topic
         payload = float(msg.payload.decode("utf-8")) 
-        print("Payload in percent {}".format(payload))
-        if topic == self.id + config.subscribe[0]:
+        prefix = config.MQTT_ENDPOINT_PREFIX + self.id
+        logger.log("Payload in percent {}".format(payload), logger.LOG_DEBUG)
+        if topic == prefix + config.subscribe[0]:
             # TODO: call motor values
-            print("send to light") 
+            logger.log("send to light", logger.LOG_DEBUG) 
             motor.controlLight(payload)
-        elif topic == self.id + config.subscribe[1]:
+        elif topic == prefix + config.subscribe[1]:
             # TODO: call motor values
-            print("send to flowpump") 
-            motor.controlWaterPump(payload)
-        elif topic == self.id + config.subscribe[2]:
-            # TODO: call motor values
-            print("sending to foodpump")
+            logger.log("send to flowpump", logger.LOG_DEBUG) 
             motor.controlFood(payload)
+        elif topic == prefix + config.subscribe[2]:
+            # TODO: call motor values
+            logger.log("sending to foodpump", logger.LOG_DEBUG)
+            motor.controlWaterPump(payload)
+
         else:
-            print("Unknown topic")
+            logger.log("Unknown topic", logger.LOG_ERROR)
 
 
 def eventHandler(server, topicList):
@@ -114,17 +117,21 @@ def eventHandler(server, topicList):
     # TODO: send updated values from here
     while True:
         server.start()
+        # start time listner
+        t0 = time.time()
         # receive actuator data
         for topic in topicList:
-            server.subscribe(server.id + topic)
-            print(server.id + topic)
+            server.subscribe(config.MQTT_ENDPOINT_PREFIX + server.id + topic)
+            logger.log("Subscribe event: " + config.MQTT_ENDPOINT_PREFIX + server.id + topic, logger.LOG_DEBUG)
         # send sensor data
         for data in sensordata.readAll():
             server.send(data.payload, server.id + data.topic)
+            logger.log("Uploading to {} with data {}".format(MQTT_ENDPOINT_PREFIX + server.id + data.topic, data.payload))
+        t1 = time.time()
         time.sleep(config.interval)
-        print("send sensor data")
+        logger.log("Event loop finished {} seconds and slept for {} seconds".format(t1-t0, config.interval), logger.LOG_DEBUG)
         server.end()
-    print("End of event loop")
+    logger.log("EventHandler has stopped", logger.LOG_ERROR)
 
 
 if __name__ == "__main__":
@@ -132,7 +139,7 @@ if __name__ == "__main__":
                   config.port,
                   user=config.user,
                   password=config.passwd)
-    print("Should be connected")
+    logger.log("Connected with MQTT server", logger.LOG_DEBUG)
 
     eventHandler(server, config.subscribe)
 

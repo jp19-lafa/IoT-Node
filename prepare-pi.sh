@@ -37,6 +37,7 @@ function setup-pygpiod() {
   mv pigpiod.service /etc/systemd/system || exit 1
   systemctl enable pigpiod.service || exit 1
   systemctl start pigpiod.service || exit 1
+  pip install pigpio
 }
 
 # enable i2c as defined in the raspi-config
