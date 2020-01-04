@@ -33,13 +33,16 @@ mac = "B4:D5:BD:9B:5B:4F"
 
 server = "mqtt.farmlab.team"  # The server to connect to
 user = mac  # the user to connect with mqtt
-passwd = "a2cab33e-a115-41db-ae41-da7383303c1d"  # the password of said user
+passwd = ""  # the password of said user
 port = 1883  # the mqtt port
 interval = 10  # how quickly to cycle through mqtt cycles
 food = 22  # pin on the rpi for the food pump
 pump = 27  # pin on the rpi for the water pump
 light = 17  # pin on the rpi for the lights
 sensorfile = "sensors.data"
+
+# a slash must be included
+MQTT_ENDPOINT_PREFIX="farmlab/"
 
 subscribe = [
     "/actuator/lightint", "/actuator/flowpump", "/actuator/foodpump"
@@ -55,7 +58,7 @@ sensors = [
 
 # list of all sensors
 # Water1, Water2, Water3, light, ph
-sensorPins = [0x1F, 0x20, 0x21, 0x29, 0x33]
+sensorPins = [0x1F, 0x20, 0x21, 0x39, 0x33]
 
 # the moment the water level is to high (value between 0 and 255)
 RISKY_WATER_LEVEL = 150
