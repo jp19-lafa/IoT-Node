@@ -30,6 +30,10 @@ function updatesystem() {
   apt upgrade -y || exit 1
 }
 
+function installpaho {
+ pip3 install paho-mqtt
+}
+
 # install and setup pigpio and pygpiod
 function setuppygpiod() {
   apt install -y pigpio || exit 1
@@ -79,6 +83,7 @@ function execute() {
   setuppygpiod || exit 1
   installgattlib
   pip3 install PyBluez  pexpect # install bluetooth support
+  installpaho
 }
 
 # only run the commands when you are root.
