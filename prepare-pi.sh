@@ -81,7 +81,7 @@ function execute() {
 }
 
 # only run the commands when you are root.
-if [ "$(id)" == "0" ]; then
+if [ "$(id -u)" == "0" ]; then
   execute
 else
   printf "You must be root to be able to modify the system"
