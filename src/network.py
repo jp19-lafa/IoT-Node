@@ -125,7 +125,7 @@ def eventHandler(server, topicList):
             logger.log("Subscribe event: " + config.MQTT_ENDPOINT_PREFIX + server.id + topic, logger.LOG_DEBUG)
         # send sensor data
         for data in sensordata.readAll():
-            server.send(data.payload, server.id + data.topic)
+            server.send(data.payload, config.MQTT_ENDPOINT_PREFIX + server.id + data.topic)
             logger.log("Uploading to {} with data {}".format(config.MQTT_ENDPOINT_PREFIX + server.id + data.topic, data.payload))
         t1 = time.time()
         time.sleep(config.interval)
