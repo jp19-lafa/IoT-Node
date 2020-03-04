@@ -56,7 +56,7 @@ function enablew1() {
 
 function installgattlib {
   pip3 download gattlib
-  tar xvzf ./gattlib-0.20150805.tar.gz
+  tar xvzf ./gattlib-*.tar.gz
   cd gattlib-0.20150805/
   sed -ie 's/boost_python-py34/boost_python-py35/' setup.py
   pip3 install .
