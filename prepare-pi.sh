@@ -37,7 +37,7 @@ function setuppygpiod() {
   mv pigpiod.service /etc/systemd/system || exit 1
   systemctl enable pigpiod.service || exit 1
   systemctl start pigpiod.service || exit 1
-  pip install pigpio
+  pip3 install pigpio
 }
 
 # enable i2c as defined in the raspi-config
@@ -73,7 +73,7 @@ function execute() {
   enablei2c
   enablew1
   preparebluetooth
-  apt install -y python-smbus python3-smbus python-dev python3-dev i2c-tools libbluetooth-dev python-dev mercurial libglib2.0-dev libboost-python-dev libboost-all-dev libboost-thread-dev || exit 1 # install smbus for i2c
+  apt install -y python-smbus python3-smbus python-dev python3-dev i2c-tools libbluetooth-dev python-dev mercurial libglib2.0-dev libboost-python-dev libboost-all-dev libboost-thread-dev python3-pip || exit 1 # install smbus for i2c
   modprobe w1-gpio || exit 1
   setuppygpiod || exit 1
   installgattlib
