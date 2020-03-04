@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # MIT License
 #
@@ -25,13 +25,13 @@
 # TODO: Install IoT-Node software and add a systemctl service for it
 
 # perform a system update. This should be executed first
-function update-system() {
+function updatesystem() {
   apt update || exit 1
   apt upgrade -y || exit 1
 }
 
 # install and setup pigpio and pygpiod
-function setup-pygpiod() {
+function setuppygpiod() {
   apt install -y pigpio || exit 1
   wget https://raw.githubusercontent.com/joan2937/pigpio/master/util/pigpiod.service || exit 1
   mv pigpiod.service /etc/systemd/system || exit 1
@@ -41,7 +41,7 @@ function setup-pygpiod() {
 }
 
 # enable i2c as defined in the raspi-config
-function enable-i2c() {
+function enablei2c() {
   dtparam i2c=on || exit 1
   if ! grep -q "^i2c[-_]dev" /etc/modules; then
     printf "i2c-dev\n" >>/etc/modules
@@ -50,11 +50,11 @@ function enable-i2c() {
 }
 
 # enable one wire as defined in the raspi-config
-function enable-w1() {
+function enablew1() {
   printf "dtoverlay=w1-gpio\n" >>/boot/config.txt || exit 1
 }
 
-function install-gattlib {
+function installgattlib {
   pip3 download gattlib
   tar xvzf ./gattlib-0.20150805.tar.gz
   cd gattlib-0.20150805/
@@ -62,21 +62,21 @@ function install-gattlib {
   pip3 install .
 }
 
-function prepare-bluetooth {
+function preparebluetooth {
   sed -i 's:ExecStart=/usr/lib/bluetooth/bluetoothd:ExecStart=/usr/lib/bluetooth/bluetoothd -C:' /etc/systemd/system/dbus-org.bluez.service
   sdptool add SP
 }
 
 # install all software needed to run the IoT Node
 function execute() {
-  update-system
-  enable-i2c
-  enable-w1
-  prepare-bluetooth
+  updatesystem
+  enablei2c
+  enablew1
+  preparebluetooth
   apt install -y python-smbus python3-smbus python-dev python3-dev i2c-tools libbluetooth-dev python-dev mercurial libglib2.0-dev libboost-python-dev libboost-all-dev libboost-thread-dev || exit 1 # install smbus for i2c
   modprobe w1-gpio || exit 1
-  setup-pygpiod || exit 1
-  install-gattlib
+  setuppygpiod || exit 1
+  installgattlib
   pip3 install PyBluez  pexpect # install bluetooth support
 }
 
